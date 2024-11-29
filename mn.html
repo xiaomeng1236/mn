@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>萌呢？</title>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: #000;
+        overflow: hidden;
+    }
+    .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 60%;
+        font-size: 2.5vw;
+    }
+    .char {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        margin: 0 10px;
+        flex: 1;
+    }
+    .heart {
+        visibility: hidden;
+        font-size: 2.5vw;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .heart.show {
+        visibility: visible;
+        animation: popIn 0.3s ease-out forwards;
+    }
+    @keyframes popIn {
+        0% {
+            transform: scale(0);
+            opacity: 0;
+        }
+        70% {
+            transform: scale(1.2);
+            opacity: 0.7;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    /* 手机端简单地调小字号 */
+    @media screen and (max-width: 768px) {
+        .container {
+            width: 100%;
+            font-size: 1.8vw;  /* 显著减小字号 */
+        }
+        .heart {
+            font-size: 1.8vw;  /* 确保爱心大小匹配 */
+        }
+    }
+</style>
+
+</head>
+<body>
+<div class="container">
+    <div class="char" id="char1"></div>
+    <div class="char" id="char2"></div>
+    <div class="char" id="char3"></div>
+</div>
+
+<script>
+const char1 = [ // 萌
+    0,0,0,1,0,0,0,0,1,0,0,0,
+    1,1,1,1,1,1,1,1,1,1,1,1,
+    0,0,0,1,0,0,0,0,1,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,1,1,1,1,0,0,1,1,1,1,0,
+    0,1,0,0,1,0,0,1,0,0,1,0,
+    0,1,1,1,1,0,0,1,1,1,1,0,
+    0,1,0,0,1,0,0,1,0,0,1,0,
+    0,1,1,1,1,0,0,1,1,1,1,0,
+    0,0,0,0,0,0,0,1,0,0,1,0,
+    0,0,0,0,0,0,1,0,0,1,1,0,
+    0,0,0,0,0,1,0,0,0,0,1,0
+];
+
+const char2 = [ // 呢
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,1,1,1,1,1,1,0,
+    0,0,0,0,0,1,0,0,0,0,1,0,
+    0,0,0,0,0,1,0,0,0,0,1,0,
+    1,1,1,1,0,1,1,1,1,1,1,0,
+    1,0,0,1,0,1,0,0,0,0,0,0,
+    1,0,0,1,0,1,0,1,0,0,1,0,
+    1,1,1,1,0,1,0,1,0,1,0,0,
+    0,0,0,0,0,1,0,1,1,0,0,0,
+    0,0,0,0,0,1,0,1,0,0,0,0,
+    0,0,0,0,1,0,0,1,0,0,0,1,
+    0,0,0,1,0,0,0,1,1,1,1,1
+];
+
+const char3 = [ // ？
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,1,1,1,0,0,0,0,0,
+    0,0,0,1,0,0,0,1,0,0,0,0,
+    0,0,1,0,0,0,0,0,1,0,0,0,
+    0,0,0,0,0,0,0,1,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0,
+    0,0,0,0,0,0,1,0,0,0,0,0
+];
+
+const hearts = ['❤️', '💖', '💗', '💓', '💝', '💕'];
+
+function createChar(pattern, elementId) {
+    const element = document.getElementById(elementId);
+    pattern.forEach((value, index) => {
+        if (value === 1) {
+            const heart = document.createElement('span');
+            heart.className = 'heart';
+            heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+            element.appendChild(heart);
+        } else {
+            const empty = document.createElement('span');
+            empty.className = 'heart';
+            empty.style.visibility = 'hidden';
+            empty.textContent = '❤️';
+            element.appendChild(empty);
+        }
+    });
+}
+
+function animateHearts() {
+    const visibleHearts = Array.from(document.querySelectorAll('.heart')).filter(heart => 
+        !heart.style.visibility || heart.style.visibility !== 'hidden'
+    );
+    
+    visibleHearts.forEach((heart, index) => {
+        setTimeout(() => {
+            heart.classList.add('show');
+        }, index * 100); // 每个爱心间隔100ms出现
+    });
+}
+
+window.onload = function() {
+    createChar(char1, 'char1');
+    createChar(char2, 'char2');
+    createChar(char3, 'char3');
+    // 稍微延迟一下动画开始的时间，确保页面完全加载
+    setTimeout(animateHearts, 500);
+};
+</script>
+</body>
+</html>
